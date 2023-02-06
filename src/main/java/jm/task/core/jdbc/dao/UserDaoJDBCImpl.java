@@ -12,9 +12,10 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    Connection connection = Util.getConnect();
+
     public void createUsersTable() {
-        try (Connection connection = Util.getConnect(); Statement statement = connection.createStatement()) {
-            //Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS usersdb (Id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(60), lastName VARCHAR(60), age INT)");
             System.out.println("Таблица создана");
         } catch (SQLException e) {
@@ -23,7 +24,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        try (Connection connection = Util.getConnect(); Statement statement = connection.createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("DROP TABLE IF EXISTS usersdb");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,7 +69,6 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.setLastName(resultSet.getString("lastname"));
                 user.setAge(resultSet.getByte("age"));
                 userList.add(user);
-                System.out.println("Пользователи получены");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -77,8 +77,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Connection connection = Util.getConnect(); Statement statement = connection.createStatement()){
-statement.executeUpdate("TRUNCATE TABLE usersdb");
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate("TRUNCATE TABLE usersdb");
             System.out.println("Таблица очищена.");
         } catch (SQLException e) {
             throw new RuntimeException(e);
